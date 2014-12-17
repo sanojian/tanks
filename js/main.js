@@ -16,7 +16,10 @@ GameState.prototype.create = function() {
 	// Set stage background color
 	this.game.stage.backgroundColor = 0x4488cc;
 
-	tank = new Tank(100, 100, this.game);
+	tank = new Tank(100, 100, 'Blue', this.game);
+
+	var enemy = new Tank(300, 100, 'Red', this.game);
+
 
 	//  Our bullet group
 	this.game.bullets = game.add.group();
