@@ -3,7 +3,7 @@
  */
 
 
-function Tank(x, y, color, game) {
+function Tank(x, y, color, game, group) {
 
 	var RELOAD_TIME = 1000;
 
@@ -13,16 +13,28 @@ function Tank(x, y, color, game) {
 
 	var sprite = game.add.sprite(x, y, 'tanks', 'tank' + color + '_outline.png');
 	sprite.anchor.setTo(0.5, 0.5);
+	if (group) {
+		group.add(sprite);
+	}
+	sprite.enableBody = true;
+	sprite.physicsBodyType = Phaser.Physics.ARCADE;
+	game.physics.enable(sprite, Phaser.Physics.ARCADE);
+
 	var barrel = game.add.sprite(0, 0, 'tanks', 'barrel' + color + '_outline.png');
 	barrel.anchor.setTo(0.5, 0);
 	sprite.addChild(barrel);
 
 	this.update = function() {
+
 		// move
 		var dx = Math.sin(sprite.rotation) * this.speed;
 		var dy = Math.cos(sprite.rotation) * this.speed;
-		sprite.x -= dx;
-		sprite.y += dy;
+		//sprite.body.velocity.x = -dx;
+		//sprite.body.velocity.y = dy;
+		game.physics.arcade.velocityFromAngle(sprite.angle-90, this.speed*100, sprite.body.velocity);
+
+		//sprite.x -= dx;
+		//sprite.y += dy;
 
 		// barrel
 		dx = sprite.x - game.input.activePointer.x;
@@ -43,7 +55,7 @@ function Tank(x, y, color, game) {
 		else {
 			this.shootTime = curTime;
 		}
-		var bullet = game.bullets.getFirstExists(false);
+		var bullet = g_game.bullets.getFirstExists(false);
 
 		bullet.reset(sprite.x, sprite.y);
 
@@ -53,5 +65,9 @@ function Tank(x, y, color, game) {
 		bullet.body.velocity.x = -dx * 3;
 		bullet.body.velocity.y = dy * 3;
 
+	};
+
+	this.getSprite = function() {
+		return sprite;
 	};
 }
